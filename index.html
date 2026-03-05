@@ -67,8 +67,10 @@
         const canvas = document.getElementById('signatureCanvas');
         const ctx = canvas.getContext('2d');
         const backgroundImage = new Image();
+
+        backgroundImage.crossOrigin = "anonymous";
         // substitua pelo caminho relativo da imagem base
-        backgroundImage.src = 'https://github.com/guipaex/gerador-de-assinatura/blob/master/assets/_bdc.jpg';
+        backgroundImage.src = 'https://raw.githubusercontent.com/guipaex/gerador-de-assinatura/master/assets/_bdc.jpg';
 
         backgroundImage.onload = function() {
             redraw();
