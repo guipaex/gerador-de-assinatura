@@ -1,0 +1,38 @@
+[
+  {
+    "empresa": "Grupo BDC",
+    "font": "Montserrat Semibold",
+    "name": {
+      "position": [410, 30],
+      "color": "#b98b3d",
+      "fontSize": "50"
+    },
+    "title": {
+      "position": [410, 50],
+      "color": "#000",
+      "fontSize": "12"
+    },
+    "bg": {
+      "dimension": [855, 200],
+      "file": "_bdc.jpg"
+    }
+  },
+  {
+    "empresa": "YES! Idiomas",
+    "font": "Rubik",
+    "name": {
+      "position": [410, 30],
+      "color": "#ed2930",
+      "fontSize": "16"
+    },
+    "title": {
+      "position": [410, 50],
+      "color": "#000",
+      "fontSize": "12"
+    },
+    "bg": {
+      "dimension": [700, 150],
+      "file": "_yes.jpg"
+    }
+  }
+]

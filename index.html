@@ -1,140 +1,69 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Gerador de Assinatura</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            text-align: center;
-        }
-        #canvasWrapper {
-            position: relative;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        canvas {
-            display: flex;
-            max-width: 80vw;
-            border: 1px solid #ccc;
-        }
-        #exportButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-        /* styles for the signature text; editable by user */
-        .signature-name {
-            font-family: 'Montserrat Semibold';
-            color: #b98b3d;
-            font-size: 24px;
-            
-        }
-        .signature-title {
-            font-family: 'Montserrat';
-            font-size: 16px;
-            color: #000;
-        }
-    </style>
-</head>
-<body>
-    <h1>Gerador de Assinatura de Email</h1>
-    <form id="signatureForm">
-        <label for="nameInput">Nome:</label>
-        <input type="text" id="nameInput" required placeholder="Nome e Sobrenome"><br><br>
-        <label for="titleInput">Cargo/Setor:</label>
-        <input type="text" id="titleInput" placeholder="Cargo / Setor" required><br><br>
-        <!-- <button type="submit">Atualizar visualização</button> -->
-    </form>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Gerador de Assinatura de E-mail</h1>
+      <form id="signatureForm">
+        <fieldset>
+          <label for="bgSelect">Empresa</label>
+          <select id="bgSelect"></select>
+          <label for="nameInput">Nome</label>
+          <input
+            type="text"
+            id="nameInput"
+            required
+            placeholder="Nome e Sobrenome"
+          />
 
-    <div id="canvasWrapper">
-        <canvas id="signatureCanvas" width="855" height="200"></canvas>
+          <label for="titleInput">Cargo/Setor</label>
+          <input
+            type="text"
+            id="titleInput"
+            required
+            placeholder="Cargo / Setor"
+          />
+        </fieldset>
+      </form>
+
+      <div id="canvasWrapper">
+        <canvas
+          id="signatureCanvas"
+          width="855"
+          height="200"
+          aria-label="Pré‑visualização da assinatura"
+        ></canvas>
+      </div>
+
+      <div>
+        <button id="exportButton">
+          Salvar imagem
+          <!-- <span class="material-symbols-rounded"> download_2 </span> -->
+        </button>
+      </div>
+    </main>
+
+    <div class="sr-only" aria-hidden="true">
+      <span id="styleName" class="signature-name"></span>
+      <span id="styleTitle" class="signature-title"></span>
     </div>
-    <!-- hidden elements used to compute CSS-based styles -->
-    <div style="position:absolute; left:-9999px; top:-9999px; visibility:hidden;">
-        <span id="styleName" class="signature-name"></span>
-        <span id="styleTitle" class="signature-title"></span>
-    </div>
-
-    <div>
-        <button id="exportButton">Exportar como JPG</button>
-        <h4>Para exportar, clique com o botão direito do mouse e em seguida "Salvar imagem como..." 
-        </h4>
-    </div>
-
-    <script>
-        const canvas = document.getElementById('signatureCanvas');
-        const ctx = canvas.getContext('2d');
-        const backgroundImage = new Image();
-
-        backgroundImage.crossOrigin = "anonymous";
-        // substitua pelo caminho relativo da imagem base
-        backgroundImage.src = 'https://raw.githubusercontent.com/guipaex/gerador-de-assinatura/master/assets/_bdc.jpg';
-
-        backgroundImage.onload = function() {
-            redraw();
-        };
-
-        // update whenever the form is submitted or any input changes
-        document.getElementById('signatureForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            redraw();
-        });
-        document.getElementById('nameInput').addEventListener('input', redraw);
-        document.getElementById('titleInput').addEventListener('input', redraw);
-
-        // não há estado de arraste — texto permanece em posição fixa (centralizada)
-
-        function redraw() {
-            // limpar e desenhar plano de fundo
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            if (backgroundImage.complete) {
-                ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-            }
-            // texto a partir dos inputs
-            let name = document.getElementById('nameInput').value;
-            let title = document.getElementById('titleInput').value;
-            // if empty use placeholder for preview
-            if (!name) {
-                name = document.getElementById('nameInput').placeholder || '';
-            }
-            if (!title) {
-                title = document.getElementById('titleInput').placeholder || '';
-            }
-            // canvas doesn't respect CSS text-transform, so apply uppercase here
-            title = title.toUpperCase();
-
-            // obter estilos definidos via CSS nas spans ocultas
-            const nameSpan = document.getElementById('styleName');
-            const titleSpan = document.getElementById('styleTitle');
-            const nameStyle = window.getComputedStyle(nameSpan);
-            const titleStyle = window.getComputedStyle(titleSpan);
-
-            ctx.fillStyle = nameStyle.color;
-            ctx.font = `${nameStyle.fontSize} ${nameStyle.fontFamily}`;
-            // alinha à esquerda com pequena margem
-            const nameText = name;
-            const x = 410; // margem esquerda de 20px
-            const y = parseInt(nameStyle.fontSize, 10) + 5;
-            ctx.fillText(nameText, x, y);
-
-            ctx.fillStyle = titleStyle.color;
-            ctx.font = `${titleStyle.fontSize} ${titleStyle.fontFamily}`;
-            const titleText = title;
-            const x2 = 410; // mesma margem
-            const y2 = parseInt(titleStyle.fontSize, 10) + 36;
-            ctx.fillText(titleText, x2, y2);
-        }
-
-        document.getElementById('exportButton').addEventListener('click', function() {
-            const dataURL = canvas.toDataURL('image/jpeg');
-            // criar link de download
-            const link = document.createElement('a');
-            link.href = dataURL;
-            link.download = 'assinatura.jpg';
-            link.click();
-        });
-    </script>
-</body>
+    <footer>
+      <a href="https://www.guipaes.com" target="_blank">
+        <p>Desenvolvido por Gui Paes</p>
+        <!-- <span class="material-symbols-rounded"> rocket_launch </span> -->
+      </a>
+    </footer>
+    <script src="./js/main.js"></script>
+  </body>
 </html>
